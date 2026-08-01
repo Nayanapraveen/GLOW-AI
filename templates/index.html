@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Glow AI</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .logo span {
+            color: #333;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            background: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn.hair {
+            background: #28a745;
+        }
+
+        .btn.hair:hover {
+            background: #1e7e34;
+        }
+        /* Chatbot Floating Button */
+#chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #ff4d6d;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 1000;
+}
+
+/* 💬 Chat Box */
+#chat-box {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: white;
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+/* Header */
+#chat-header {
+    background: #ff4d6d;
+    color: white;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    font-weight: bold;
+}
+
+/* Chat body */
+#chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+/* Input */
+#chat-input {
+    width: 70%;
+    padding: 8px;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+/* Button */
+#chat-box button {
+    width: 30%;
+    background: #ff4d6d;
+    color: white;
+    border: none;
+}
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="logo">Glow <span>AI</span></div>
+        <h2>Select Analysis Type</h2>
+
+        <button class="btn" onclick="location.href='/skin'">
+            Skin Analysis
+        </button>
+
+        <button class="btn hair" onclick="location.href='/hair'">
+            Hair Analysis
+        </button>
+    </div>
+
+<div id="chat-icon" onclick="toggleChat()">💬</div>
+
+
+<div id="chat-box">
+    <div id="chat-header">Glow AI Assistant ✨</div>
+
+    <div id="chat-body"></div>
+
+    <input type="text" id="chat-input" placeholder="Ask me anything...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+<script>
+function toggleChat() {
+    let box = document.getElementById("chat-box");
+    box.style.display = (box.style.display === "flex") ? "none" : "flex";
+}
+
+function sendMessage() {
+    let input = document.getElementById("chat-input");
+    let msg = input.value;
+
+    if (!msg) return;
+
+    let chatBody = document.getElementById("chat-body");
+
+    // Show user message
+    chatBody.innerHTML += "<p><b>You:</b> " + msg + "</p>";
+
+    // Send to Flask backend
+    fetch("/chatbot", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "message=" + encodeURIComponent(msg)
+    })
+    .then(res => res.text())
+    .then(data => {
+        // Show bot reply
+        chatBody.innerHTML += "<p><b>Bot:</b> " + data + "</p>";
+        chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+    input.value = "";
+}
+</script>
+</body>
+</html>

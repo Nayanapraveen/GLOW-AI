@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Analysis Result</title>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #1f1c2c, #928dab);
+        color: white;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 90%;
+        margin: auto;
+        padding: 30px;
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .analysis-box {
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        backdrop-filter: blur(10px);
+    }
+
+    .products {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.12);
+        padding: 20px;
+        border-radius: 15px;
+        transition: 0.3s;
+        backdrop-filter: blur(10px);
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+    }
+
+    .card h3 {
+        margin-bottom: 10px;
+    }
+
+    .card p {
+        font-size: 0.9rem;
+        color: #ddd;
+    }
+
+    .buy-btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 15px;
+        background: #ff6b6b;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .buy-btn:hover {
+        background: #ff3b3b;
+    }
+    .product-img {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+
+    .score {
+        font-size: 2rem;
+        margin: 15px 0;
+        color: #00ffcc;
+    }
+    .ingredient-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.ingredient-tag {
+    background: #ffffff;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background: white;
+  color: black;
+  margin: 15% auto;
+  padding: 20px;
+  width: 60%;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.modal-content h3 {
+  color: #ff4d4d;
+  }
+  .modal-content p {
+  font-size: 16px;
+  line-height: 1.5;
+  }
+
+.close {
+  float: right;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🤖 AI Analysis Result</h1>
+
+    <div class="analysis-box">
+        {% if skin_type %}
+        <p><b>Skin Type:</b> {{ skin_type }}</p>
+        <p><b>Skin Concern:</b> {{ skin_concern }}</p>
+        {% endif %}
+        {% if hair_type %}
+        <p><b>Hair Type:</b> {{ hair_type }}</p>
+        <p><b>Hair Concern:</b> {{ hair_concern }}</p>
+        {% endif %}
+
+
+
+        <p>✨ Based on your inputs, these products are best suited for you.</p>
+    </div>
+
+{% if skin_ingredients %}
+<h3>🧪 Skin Ingredients</h3>
+    <div class="ingredient-box">
+    {% for i in skin_ingredients %}
+        <span class="ingredient-tag">{{ i }}</span>
+    {% endfor %}
+    </div>
+{% endif %}
+    <h2> Ingredient Warnings </h2>
+<div id="ingredientWarnings" class="warning-card"></div>
+{% if skin_products %}
+<h3>💄 Skin Products</h3>
+    <div class="products">
+{% for p in skin_products %}
+<div class="card">
+    <img src="{{ p.image }}"
+         class="product-img">
+    <h4>{{ p.name }}</h4>
+    <p>{{ p.desc }}</p>
+    <a href="{{ p.link }}" target="_blank" class="buy-btn">Buy Now</a>
+</div>
+{% endfor %}
+        </div>
+{% endif %}
+
+ {% if hair_ingredients %}
+<h3>🧪 Hair Ingredients</h3>
+    <div class="ingredient-box">
+       {% for i in hair_ingredients %}
+        <span class="ingredient-tag">{{ i }}</span>
+    {% endfor %}
+        </div>
+{% endif %}
+{% if hair_products %}
+<h3>💇 Hair Products</h3>
+<div class="products">
+{% for p in hair_products %}
+<div class="card">
+    <img src="{{ p.image }}"
+         class="product-img">
+    <h4>{{ p.name }}</h4>
+    <p>{{ p.desc }}</p>
+        <a href="{{ p.link }}" target="_blank" class="buy-btn">Buy Now</a>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+</div>
+<div id="patchModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3 id="modalTitle"></h3>
+    <p id="modalText"></p>
+  </div>
+</div>
+<script>
+window.onload = function() {
+
+
+    let skinProducts = {{ skin_products | default([]) | tojson }};
+    let hairProducts = {{ hair_products | default([]) | tojson }};
+
+    console.log("Skin:", skinProducts);
+    console.log("Hair:", hairProducts);
+
+    let modal = document.getElementById("patchModal");
+    let closeBtn = document.querySelector(".close");
+
+    let title = document.getElementById("modalTitle");
+    let text = document.getElementById("modalText");
+
+    let warningBox = document.getElementById("ingredientWarnings");
+
+    let warningText = "";
+    let shown = new Set();
+
+
+    title.innerText = "⚠️ Safety Reminder";
+    text.innerText = "Always do a patch test before using any new product. Avoid mixing too many actives at once.";
+    modal.style.display = "block";
+
+
+    skinProducts.forEach(p => {
+
+        let name = (p.name || "").toLowerCase();
+
+        if (name.includes("retinol") && !shown.has("retinol")) {
+            warningText += "⚠️ Retinol: Use only at night. Use sunscreen.<br>";
+            shown.add("retinol");
+        }
+
+        if (name.includes("salicylic") && !shown.has("salicylic")) {
+            warningText += "⚠️ Salicylic Acid: Avoid overuse. Can dry skin.<br>";
+            shown.add("salicylic");
+        }
+
+        if (name.includes("vitamin c") && !shown.has("vitamin c")) {
+            warningText += "⚠️ Vitamin C: Use sunscreen.<br>";
+            shown.add("vitamin c");
+        }
+
+        if (name.includes("kojic") && !shown.has("kojic")) {
+            warningText += "⚠️ Kojic Acid: Increases sun sensitivity.<br>";
+            shown.add("kojic");
+        }
+
+    });
+
+
+    hairProducts.forEach(p => {
+
+        let name = (p.name || "").toLowerCase();
+
+        if (name.includes("ketoconazole") && !shown.has("keto")) {
+            warningText += "⚠️ Ketoconazole: Use 2-3 times/week only.<br>";
+            shown.add("keto");
+        }
+
+        if (name.includes("serum") && !shown.has("silicone")) {
+            warningText += "⚠️ Serums may contain silicones → buildup possible.<br>";
+            shown.add("silicone");
+        }
+
+        if (name.includes("keratin") && !shown.has("keratin")) {
+            warningText += "⚠️ Keratin: Overuse may make hair brittle.<br>";
+            shown.add("keratin");
+        }
+
+        if (name.includes("onion") && !shown.has("onion")) {
+            warningText += "⚠️ Onion Oil: May irritate sensitive scalp.<br>";
+            shown.add("onion");
+        }
+
+    });
+
+
+    if (warningText !== "" && warningBox) {
+        warningBox.innerHTML = "<b>⚠️ Ingredient Warnings:</b><br><br>" + warningText;
+    }
+
+
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+};
+</script>
+</body>
+</html>

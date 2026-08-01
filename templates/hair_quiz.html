@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hair Quiz</title>
+
+<style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #fbc2eb, #a6c1ee);
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+
+.container {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 15px;
+    width: 450px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.question {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: 500;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>Find Your Hair Type</h2>
+
+<form action="/hair_quiz" method="POST">
+
+<div class="question">
+    <label>1. How does your scalp feel 2 days after washing?</label>
+
+    <select name="q1">
+        <option value="oily">Oily</option>
+        <option value="normal">Normal</option>
+        <option value="dry">Dry</option>
+    </select>
+</div>
+
+<div class="question">
+    <label>2. Does your hair become frizzy easily?</label>
+
+    <select name="q2">
+        <option value="dry">Yes</option>
+        <option value="normal">Sometimes</option>
+        <option value="smooth">No</option>
+    </select>
+</div>
+
+<div class="question">
+    <label>3. How often do you wash your hair?</label>
+
+    <select name="q3">
+        <option value="oily">Daily</option>
+        <option value="normal">Every 2–3 days</option>
+        <option value="dry">Weekly</option>
+    </select>
+</div>
+
+<div class="question">
+    <label>4. How would you describe your hair texture?</label>
+
+    <select name="q4">
+        <option value="straight">Straight</option>
+        <option value="wavy">Wavy</option>
+        <option value="curly">Curly</option>
+    </select>
+</div>
+
+<div class="question">
+    <label>5. Does your scalp itch frequently?</label>
+
+    <select name="q5">
+        <option value="oily">Yes</option>
+        <option value="normal">Sometimes</option>
+        <option value="dry">No</option>
+    </select>
+</div>
+
+<div class="question">
+    <label>6. Do you experience dandruff?</label>
+
+    <select name="q6">
+        <option value="dry">Frequently</option>
+        <option value="normal">Occasionally</option>
+        <option value="healthy">Never</option>
+    </select>
+</div>
+
+<div class="question">
+    <label>7. How does your hair feel after washing?</label>
+
+    <select name="q7">
+        <option value="dry">Dry and rough</option>
+        <option value="normal">Soft</option>
+        <option value="oily">Oily quickly</option>
+    </select>
+</div>
+
+<div class="question">
+    <label>8. Does your hair break easily?</label>
+
+    <select name="q8">
+        <option value="damaged">Yes</option>
+        <option value="normal">Sometimes</option>
+        <option value="healthy">No</option>
+    </select>
+</div>
+
+<div class="question">
+    <label>9. How thick is your hair?</label>
+
+    <select name="q9">
+        <option value="thin">Thin</option>
+        <option value="normal">Medium</option>
+        <option value="thick">Thick</option>
+    </select>
+</div>
+
+<div class="question">
+    <label>10. Does humidity affect your hair?</label>
+
+    <select name="q10">
+        <option value="frizzy">Very much</option>
+        <option value="normal">Slightly</option>
+        <option value="smooth">Not really</option>
+    </select>
+</div>
+
+<button type="submit">Analyze My Type</button>
+
+</form>
+</div>
+
+</body>
+</html>

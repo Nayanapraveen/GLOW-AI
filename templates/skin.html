@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Glow AI</title>
+
+<style>
+    .navbar {
+        width: 100%;
+        padding: 15px 40px;
+        background: rgba(255,255,255,0.2);
+        display: flex;
+        justify-content: flex-end;
+        gap: 20px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-weight: bold;
+    }
+
+    .navbar a {
+        text-decoration: none;
+        color: #4b2aad;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column; /* IMPORTANT */
+    }
+
+    .container {
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        width: 400px;
+        text-align: center;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    select, button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+
+    button {
+        background-color: #6a11cb;
+        color: white;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    button:hover {
+        background-color: #2575fc;
+    }
+
+    /*  NEW QUIZ SECTION STYLE */
+    .quiz-section {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .quiz-btn {
+        background: linear-gradient(45deg, #6a11cb, #2575fc);
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 200px;
+    }
+
+    .quiz-btn:hover {
+        opacity: 0.9;
+    }
+    .logo {
+    font-size: 42px;
+    font-weight: 700;
+    text-align: center;
+    color: black;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.logo span {
+    color: black;
+    font-weight: 900;
+}
+    /* Chatbot Floating Button */
+#chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #ff4d6d;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 1000;
+}
+
+/* Chat Box */
+#chat-box {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: white;
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+/* Header */
+#chat-header {
+    background: #ff4d6d;
+    color: white;
+    padding: 10px;
+    border-radius: 10px 10px 0 0;
+    font-weight: bold;
+}
+
+/* Chat body */
+#chat-body {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+/* Input */
+#chat-input {
+    width: 70%;
+    padding: 8px;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+/* Button */
+#chat-box button {
+    width: 30%;
+    background: #ff4d6d;
+    color: white;
+    border: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+    {% if 'user' in session %}
+        <span>Welcome, {{ session.user }}</span>
+        <a href="/logout">Logout</a>
+    {% endif %}
+</div>
+
+<div class="container">
+    <h1 class="logo">Glow <span>AI</span>- Skin Analysis</h1>
+
+<form action="/skin" method="POST">
+
+    <label>Skin Type:</label>
+    <select name="skin_type" required>
+        <option value="">-- Select Skin Type --</option>
+        <option value="oily skin">Oily</option>
+        <option value="dry skin">Dry</option>
+        <option value="combination skin">Combination</option>
+        <option value="sensitive skin">Sensitive</option>
+    </select>
+
+    <br><br>
+
+    <label>Skin Concern:</label>
+<select name="skin_concern" required>
+    <option value="">-- Select Concern --</option>
+    <option value="acne">Acne</option>
+    <option value="pigmentation">Pigmentation</option>
+    <option value="aging">Aging</option>
+</select>
+    <br><br>
+
+
+    <button type="submit">Analyze</button>
+
+</form>
+<div class="history-buttons">
+    <a href="/skin_history">View Skin History</a>
+</div>
+</div>
+
+
+<div class="quiz-section">
+    <h3>Not sure about your skin type?</h3>
+   <a href="/skin_quiz">
+    <button class="quiz-btn">Take Skin Test</button>
+</a>
+</div>
+
+<div id="chat-icon" onclick="toggleChat()">💬</div>
+
+
+<div id="chat-box">
+    <div id="chat-header">Glow AI Assistant ✨</div>
+
+    <div id="chat-body"></div>
+
+    <input type="text" id="chat-input" placeholder="Ask me anything...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+<script>
+function toggleChat() {
+    let box = document.getElementById("chat-box");
+    box.style.display = (box.style.display === "flex") ? "none" : "flex";
+}
+
+function sendMessage() {
+    let input = document.getElementById("chat-input");
+    let msg = input.value;
+
+    if (!msg) return;
+
+    let chatBody = document.getElementById("chat-body");
+
+    // Show user message
+    chatBody.innerHTML += "<p><b>You:</b> " + msg + "</p>";
+
+    // Send to Flask backend
+    fetch("/chatbot", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "message=" + encodeURIComponent(msg)
+    })
+    .then(res => res.text())
+    .then(data => {
+        // Show bot reply
+        chatBody.innerHTML += "<p><b>Bot:</b> " + data + "</p>";
+        chatBody.scrollTop = chatBody.scrollHeight;
+    });
+
+    input.value = "";
+}
+
+</script>
+</body>
+</html>

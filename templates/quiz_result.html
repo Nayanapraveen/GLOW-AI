@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Result</title>
+    <style>
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #a6c1ee, #fbc2eb);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.card {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    width: 350px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.result-box {
+    margin: 10px 0;
+    padding: 10px;
+    background: #f0f0ff;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    background: #6a11cb;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+<div class="card">
+    <h2>Your Analysis Result</h2>
+    {% if skin_type %}
+    <div class="result-box">Skin Type: {{ skin_type }}</div>
+    {% endif %}
+
+    {% if hair_type %}
+    <div class="result-box">Hair Type: {{ hair_type }}</div>
+    {% endif %}
+
+    {% if hair_texture %}
+    <div class="result-box">Hair Texture: {{ hair_texture }}</div>
+    {% endif %}
+
+    <a href="/"><button>Go Back</button></a>
+</div>
+</body>
+</html>

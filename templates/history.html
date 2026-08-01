@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analysis history</title>
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right,#667eea,#764ba2);
+    margin:0;
+    padding:0;
+}
+
+.container{
+    width:80%;
+    margin:auto;
+    padding:30px;
+}
+
+h1{
+    text-align:center;
+    color:white;
+}
+
+.history-card{
+    background:white;
+    padding:20px;
+    margin:15px 0;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.history-card p{
+    margin:8px 0;
+    font-size:16px;
+}
+
+.no-data{
+    text-align:center;
+    color:white;
+    font-size:18px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>{{ type | capitalize }} History</h2>
+
+{% if history %}
+
+    {% for analysis in history %}
+
+    <div class="history-card">
+
+        {% if type == "skin" %}
+            <p><b>Skin Concern:</b> {{ analysis.skin_concern }}</p>
+        {% elif type == "hair" %}
+            <p><b>Hair Concern:</b> {{ analysis.hair_concern }}</p>
+        {% endif %}
+
+        <p><b>Recommendations:</b> {{ analysis.recommendations }}</p>
+        <p><small>{{ analysis.created_at }}</small></p>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+    <p>No history found.</p>
+{% endif %}
+
+</div>
+</body>
+</html>
