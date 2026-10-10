@@ -20,7 +20,15 @@ Glow AI is a web-based application designed to analyze skincare and haircare ing
 - Admin dashboard for product management
 
 ## How It Works
-Users select their skincare or haircare concerns and relevant ingredients. The application applies rule-based logic to analyze ingredient compatibility and provides suitable recommendations.
+- Users select their skin type and skin concerns, and/or their hair type and hair concerns.
+
+- Glow AI processes the selected information using rule-based recommendation logic.
+
+- The system displays suitable ingredients and recommended skincare and haircare products.
+
+- Users can follow external shopping links to purchase recommended products.
+
+- Registered users can access their previous analysis history.
 
 ## Project Type
 Academic Project — MSc Computer Science
